@@ -13,10 +13,10 @@ public class App
         // Connect to database
         a.connect();
         // Get Employee
-         //  Employee emp = a.getEmployee(255530);
+          //Employee emp = a.getEmployee(255530);
 
         // Display results
-       // a.displayEmployee(emp);
+         //a.displayEmployee(emp);
 
         // Extract employee salary information
         ArrayList<Employee> employees = a.getAllSalaries();
