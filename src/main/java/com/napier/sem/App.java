@@ -18,7 +18,7 @@ public class App
         }
 
         // Get Employee
-        //Employee emp = a.getEmployee(255530);
+      //  Employee emp = a.getEmployee(255530);
         // Display results
         //a.displayEmployee(emp);
 
@@ -90,6 +90,24 @@ public class App
         }
     }
 
+    public void addEmployee(Employee emp)
+    {
+        try
+        {
+            Statement stmt = con.createStatement();
+            String strUpdate =
+                    "INSERT INTO employees (emp_no, first_name, last_name, birth_date, gender, hire_date) " +
+                            "VALUES (" + emp.emp_no + ", '" + emp.first_name + "', '" + emp.last_name + "', " +
+                            "'9999-01-01', 'M', '9999-01-01')";
+            stmt.execute(strUpdate);
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to add employee");
+        }
+    }
+
     public Employee getEmployee(int ID)
     {
         try
@@ -99,19 +117,18 @@ public class App
             // Create string for SQL statement
             String strSelect =
                     "SELECT employees.emp_no, employees.first_name, employees.last_name, titles.title, salaries.salary, departments.dept_name, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name "
-                            + "FROM employees  "
-                            + "JOIN titles ON employees.emp_no = titles.emp_no "
-                            + "JOIN salaries ON employees.emp_no = salaries.emp_no "
-                            + "JOIN dept_emp ON employees.emp_no = dept_emp.emp_no "
-                            + "JOIN departments ON dept_emp.dept_no = departments.dept_no "
-                            + "JOIN dept_manager ON departments.dept_no = dept_manager.dept_no "
-                            + "JOIN employees manager ON dept_manager.emp_no = manager.emp_no "
+                            + "FROM employees "
+                            + "LEFT JOIN titles ON employees.emp_no = titles.emp_no "
+                            + "LEFT JOIN salaries ON employees.emp_no = salaries.emp_no "
+                            + "LEFT JOIN dept_emp ON employees.emp_no = dept_emp.emp_no "
+                            + "LEFT JOIN departments ON dept_emp.dept_no = departments.dept_no "
+                            + "LEFT JOIN dept_manager ON departments.dept_no = dept_manager.dept_no "
+                            + "LEFT JOIN employees manager ON dept_manager.emp_no = manager.emp_no "
                             + "WHERE employees.emp_no = " + ID + " "
-                            + "AND titles.to_date = '9999-01-01' "
-                            + "AND salaries.to_date = '9999-01-01' "
-                            + "AND dept_emp.to_date = '9999-01-01' "
-                            + "AND dept_manager.to_date = '9999-01-01' "
-                    ;
+                            + "AND (titles.to_date = '9999-01-01' OR titles.to_date IS NULL) "
+                            + "AND (salaries.to_date = '9999-01-01' OR salaries.to_date IS NULL) "
+                            + "AND (dept_emp.to_date = '9999-01-01' OR dept_emp.to_date IS NULL) "
+                            + "AND (dept_manager.to_date = '9999-01-01' OR dept_manager.to_date IS NULL)";
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
             // Return new employee if valid.
